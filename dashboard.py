@@ -12,7 +12,7 @@ st.set_page_config(page_title='Data Visualization', page_icon=':tokyo_tower:', l
 
 st.title(':tokyo_tower: LTE Daily Report')
 
-df = pd.read_excel(r'Site Status Report_March_16_2025.xlsx', sheet_name= 'Site Report')
+df = pd.read_excel('Site Status Report_March_16_2025.xlsx', sheet_name= 'Site Report')
 df.index = df.index + 1
 
 
