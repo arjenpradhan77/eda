@@ -17,7 +17,24 @@ current_date = datetime.today().date()
 st.header(':tokyo_tower: LTE Daily Report')
 st.write(current_date)
 
-df = pd.read_excel('Site Status Report_March_16_2025.xlsx', sheet_name= 'Site Report')
+# URL of the file on Dropbox (direct download link)
+dropbox_url = "https://www.dropbox.com/scl/fi/w00ixdx5y347qhev38jsj/Site-Status-Report_March_17_2025.xlsx?rlkey=3ab1fr3stclhxvmcrfadpb4p6&st=d387v9b9&dl=1"  # Replace with your actual URL
+
+# Download the file from Dropbox
+response = requests.get(dropbox_url)
+
+# Check if the request was successful
+if response.status_code == 200:
+    # Read the file into a pandas DataFrame (assuming it's a CSV file)
+    file = BytesIO(response.content)
+    df = pd.read_excel(file, sheet_name= 'Site Report')
+
+    # Display the dataframe in the Streamlit app
+    # st.write(df)
+else:
+    st.error("Failed to download file. Please check the link or your internet connection.")
+
+# df = pd.read_excel('Site Status Report_March_16_2025.xlsx', sheet_name= 'Site Report')
 df.index = df.index + 1
 
 
