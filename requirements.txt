@@ -5,3 +5,6 @@ seaborn
 pandas
 streamlit
 openpyxl
+datetime
+requests
+BytesIO
