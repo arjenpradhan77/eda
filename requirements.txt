@@ -5,6 +5,4 @@ seaborn
 pandas
 streamlit
 openpyxl
-datetime
 requests
-io
