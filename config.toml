@@ -1,0 +1,4 @@
+[theme]
+backgroundColor = "#0E1017"  # Customize the background color
+secondaryBackgroundColor = "#272630"  # Customize the sidebar background color
+textColor = "#ffffff"  # Customize the text color
