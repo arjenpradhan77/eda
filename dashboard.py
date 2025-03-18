@@ -20,57 +20,54 @@ st.write(current_date)
 # URL of the file on Dropbox (direct download link)
 dropbox_url = "https://www.dropbox.com/scl/fi/uqe7fz22mc9qnopdddhw2/Site-Status-Report_March_18_2025.xlsx?rlkey=pbj4jywj7j91o5l7ee5mqbe09&st=yb2oj6b5&dl=1"  # Replace with your actual URL
 
-# Download the file from Dropbox
-response = requests.get(dropbox_url)
+# Function to download and read the file, caching the download and reading process
+@st.cache_data
+def load_data_from_dropbox(url):
+    response = requests.get(dropbox_url)
+    # Check if the request was successful
+    if response.status_code == 200:
+        # Read the file into a pandas DataFrame (assuming it's a CSV file)
+        file = BytesIO(response.content)
+        df = pd.read_excel(file, sheet_name= 'Site Report')
+        df.index = df.index + 1  # Adjust the index to start from 1
+        return df
 
-# Check if the request was successful
-if response.status_code == 200:
-    # Read the file into a pandas DataFrame (assuming it's a CSV file)
-    file = BytesIO(response.content)
-    df = pd.read_excel(file, sheet_name= 'Site Report')
+    else:
+        st.error("Failed to download file. Please check the link or your internet connection.")
+        return None
 
-    # Display the dataframe in the Streamlit app
-    # st.write(df)
-else:
-    st.error("Failed to download file. Please check the link or your internet connection.")
+# Load data with caching    
+df = load_data_from_dropbox(dropbox_url)
 
-# df = pd.read_excel('Site Status Report_March_16_2025.xlsx', sheet_name= 'Site Report')
-df.index = df.index + 1
+# If data is loaded successfully, proceed with further processing
+if df is not None:
+    # Total site status count
+    total = df['Site Status'].value_counts()
 
+    # Site Status Based on Network
+    network_df = df.groupby('Network')['Site Status'].value_counts().reset_index(name= 'Count')
+    network_df.index = range(1, len(network_df) + 1)
 
-# Total site status count
-total = df['Site Status'].value_counts()
+    # Total Sites Down By Network
+    network_down = network_df[(network_df['Site Status'] == 'Down')]
+    network_down.index = range(1, len(network_down) + 1)
 
+    # Site Status Based on Region
+    region_df = df.groupby('Region')['Site Status'].value_counts().reset_index(name='Count')
+    region_df.index = range(1, len(region_df) + 1)
 
-# Site Status Based on Network
-network_df = df.groupby('Network')['Site Status'].value_counts().reset_index(name= 'Count')
-network_df.index = range(1, len(network_df) + 1)
+    # Total Sites Down By Region
+    region_down = region_df[region_df['Site Status'] == 'Down']
+    region_down.index = range(1, len(region_down) + 1)
 
+    # Site Status Based on Province
+    province_df = df.groupby('Province')['Site Status'].value_counts().reset_index(name='Count')
+    province_df.index = range(1, len(province_df) + 1)
 
-# Total Sites Down By Network
-network_down = network_df[(network_df['Site Status'] == 'Down')]
-network_down.index = range(1, len(network_down) + 1)
-
-
-# Site Status Based on Region
-region_df = df.groupby('Region')['Site Status'].value_counts().reset_index(name='Count')
-region_df.index = range(1, len(region_df) + 1)
-
-
-# Total Sites Down By Region
-region_down = region_df[region_df['Site Status'] == 'Down']
-region_down.index = range(1, len(region_down) + 1)
-
-
-# Site Status Based on Province
-province_df = df.groupby('Province')['Site Status'].value_counts().reset_index(name='Count')
-province_df.index = range(1, len(province_df) + 1)
-
-
-# Total Sites Down on Province
-province_down = province_df[province_df['Site Status'] == 'Down']
-province_down.index = range(1, len(province_down) + 1)
-
+    # Total Sites Down on Province
+    province_down = province_df[province_df['Site Status'] == 'Down']
+    province_down.index = range(1, len(province_down) + 1)
+             
 
 # Filtering down type with province name
 # selected_down_type = st.radio('Select Site Down Features', ['Down', 'Site Down. Manually Locked', 'Site Down. Not Working due to Error'])
@@ -84,8 +81,6 @@ province_down.index = range(1, len(province_down) + 1)
 # selected_up_pro = st.slider('Select Province', min_value= 1, max_value=7, value= 3)
 # filtered_up_type = df[(df['Site Report'] == selected_up_type) & (df['Province'] == selected_up_pro)]
 # filtered_up_type = filtered_up_type.drop(columns=['Network', 'Region', 'Site Status'])
-
-
 
 
 st.sidebar.markdown('# Info')
@@ -120,6 +115,5 @@ elif selected_category == 'Up Feature':
     filtered_up_type = filtered_up_type.drop(columns=['Network', 'Region', 'Site Status'])
     filtered_up_type.index = range(1, len(filtered_up_type) + 1)
     st.write('Sites Up By Features & Province', filtered_up_type)
-
 
 
