@@ -18,7 +18,7 @@ st.header(':tokyo_tower: LTE Daily Report')
 st.write(current_date)
 
 # URL of the file on Dropbox (direct download link)
-dropbox_url = "https://www.dropbox.com/scl/fi/acz7v12kqlrw3zlfoh8ck/Site_Report_August_11_2025.xlsx?rlkey=y0u2y0kjhcwhojpewmsg7p36f&st=bc7e4e0u&dl=1"  # Replace with your actual URL
+dropbox_url = "https://www.dropbox.com/scl/fi/8oqd9w7qxp1j0ivkjbris/Site_Report_October_05_2025.xlsx?rlkey=uo0lat0rx42xg40r6glwef4bj&st=ygybivax&dl=1"  # Replace with your actual URL
 
 # Function to download and read the file, caching the download and reading process
 @st.cache_data
